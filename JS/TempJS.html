@@ -1,0 +1,50 @@
+<!DOCTYPE html>
+<html>
+<head>
+	<title></title>
+	<script src="https://ajax.googleapis.com/ajax/libs/jquery/3.3.1/jquery.min.js"></script>
+</head>
+<body>
+	<div class="score-panel">
+		<p id="time"></p>
+	</div>
+<script type="text/javascript">
+	const time = {
+	    min: 0,
+	    sec: 0,
+	    hour: 0,
+	    getSec: function(){
+	        this.sec++;
+	        if(this.sec === 59){
+	            this.min += 1;
+	            this.sec = 0;
+	        } else {
+	            if (this.sec >= 59) {
+	                this.sec = '00';
+	                this.min += 1;
+	            }
+	        }
+	        if(this.min === 59){
+	            this.hour += 1;
+	            this.min = 0;
+	        } else {
+	            if (this.min >= 59) {
+	                this.min = '00';
+	                this.hour += 1;
+	            }
+	        }
+	    },
+	}
+
+	$sT = $('.score-panel').find('#time');
+	function setTime () {
+	    setInterval(function(){
+	      time.getSec();
+
+	    $sT.html(time.hour + ':' + time.min + ':' + time.sec);
+	    },1)
+	}
+	window.clearInterval(setTime());
+</script>
+</body>
+</html>

@@ -1,0 +1,66 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <meta charset="UTF-8">
+    <style>
+        #effect {
+            background-color: blue;
+            min-height: 400px; 
+            background-attachment: fixed;
+            background-position: center;
+            background-repeat: no-repeat;
+            background-size: cover;
+            margin-bottom: 0px;
+            border-bottom: 0px;
+        }
+
+        .text {
+            max-width:70%;
+            text-align: center;
+            font-family: 'Courier new', courier, monospace;
+            font-size:3em;
+            color: white;
+            position: relative;
+            left: 14%;
+        }
+
+        .text::after {
+            content: '|';
+            opacity: 1;
+            animation: blink .7s infinite;
+        }
+
+        #main{
+        	display: flex;
+        	flex-direction: column;
+        }
+
+        @keyframes blink {
+            0%, 100%{
+                opacity: 1;
+            }
+            50%{
+                opacity:0;
+            }
+        }
+</style>
+</head>
+<body>
+	<div id="main">
+		<div id="effect">
+          <p class="text">"Testando um efeito de escrita lentamente, como se estivesse digitando alguma coisa".</p>
+      </div>
+    </div>
+    <script type="text/javascript">
+        function writer(element){
+            const textArray = element.innerHTML.split('');
+            element.innerHTML = '';
+            textArray.forEach((letra, i) => {
+                setTimeout(() => element.innerHTML += letra, 75 * i);
+            });
+        }
+        const title = document.querySelector('.text');
+        writer(title);
+    </script>
+</body>
+</html>

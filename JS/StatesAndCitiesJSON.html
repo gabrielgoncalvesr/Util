@@ -1,0 +1,44 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <meta http-equiv="content-type" content="text/html; charset=utf-8"/>
+	<script src="https://ajax.googleapis.com/ajax/libs/jquery/3.3.1/jquery.min.js"></script>
+</head>
+<body>
+	<form>
+		<select id="estados">
+			<option value=""></option>
+		</select>
+		<select id="cidades">
+			<option value=""></option>
+		</select>
+	</form>
+	<script type="text/javascript">
+		$(document).ready(function () {
+			$.getJSON('https://gist.githubusercontent.com/ografael/2037135/raw/5d31e7baaddd0d599b64c3ec04827fc244333447/estados_cidades.json', function (data) {
+				var items = [];
+				var options = '<option value="">Escolha um estado</option>';	
+				$.each(data, function (key, val) {
+					options += '<option value="' + val.nome + '">' + val.nome + '</option>';
+				});					
+				$("#estados").html(options);
+				$("#estados").change(function () {				
+					var options_cidades = '';
+					var str = "";					
+					$("#estados option:selected").each(function () {
+						str += $(this).text();
+					});
+					$.each(data, function (key, val) {
+						if(val.nome == str) {							
+							$.each(val.cidades, function (key_city, val_city) {
+								options_cidades += '<option value="' + val_city + '">' + val_city + '</option>';
+							});							
+						}
+					});
+					$("#cidades").html(options_cidades);
+				}).change();		
+			});
+		});
+	</script>
+</body>
+</html>
