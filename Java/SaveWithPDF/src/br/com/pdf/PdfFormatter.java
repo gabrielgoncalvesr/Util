@@ -28,7 +28,6 @@ public class PdfFormatter {
 	private PdfPTable table;
 	private PdfPCell cell;
 	private Font font;
-	private Font fontTable;
 	private Image image;
 	private int countPages;
 	
@@ -48,6 +47,7 @@ public class PdfFormatter {
 	private float spacingTop;
 	private float spacingBottom;
 
+	//UTIL
 	public void createPDF(String nameFile) {
 		document = new Document();
 		countPages = 0;
@@ -74,6 +74,46 @@ public class PdfFormatter {
 		}
 	}
 
+	public void closeFile() {
+		document.close();
+	}
+	
+	public void setTypeSize(String typePage) {
+		if (typePage.equals("A4")) {
+			document.setPageSize(PageSize.A4);
+		} else {
+			document.setPageSize(PageSize.A3);
+		}
+	}
+	
+	public void createHeader() throws DocumentException, MalformedURLException, IOException {
+		setPositionImage(10f, 735f);
+		addImage("logo_lyra.jpg");
+		
+		setSpacingLeft(70f);
+		setSpacingTopBottom(0f, 0f);
+		setFontCustom(3, 15);
+		insertRow("Lyra Network Telecomunicações E Meios De Pagamento Ltda.");
+		
+		setSpacingLeft(140f);
+		setSpacingTopBottom(0f, 0f);
+		setFontCustom(2, 8);
+		insertRow("Av. Queiroz Filho, 1560 - Vila Leopoldina");
+		
+		setSpacingLeft(180f);
+		setSpacingTopBottom(0f, 0f);
+		setFontCustom(2, 8);
+		insertRow("São Paulo - SP, 05319-000");
+		
+		setSpacingLeft(200f);
+		setSpacingTopBottom(0f, 0f);
+		setFontCustom(2, 8);
+		insertRow("06.649.157/0001-29");
+
+		createSeparatorLine(5f, 100f);
+	}
+	
+	//INSERT
 	public void insertRow(String row) throws DocumentException {
 		List<String> listRows = new ArrayList<String>();
 		listRows.add(row);
@@ -109,19 +149,52 @@ public class PdfFormatter {
 		}
 	}
 
-	public void setTypeSize(String typePage) {
-		if (typePage.equals("A4")) {
-			document.setPageSize(PageSize.A4);
-		} else {
-			document.setPageSize(PageSize.A3);
-		}
-	}
-
 	public void createNewPage() {
 		document.newPage();
 		countPages++;
 	}
 	
+	public void createFooterBarcode() throws DocumentException, MalformedURLException, IOException {
+		float[] columnWidths = {5, 3};
+		table = new PdfPTable(columnWidths);
+		table.setWidthPercentage(100);
+		table.setHorizontalAlignment(Element.ALIGN_CENTER);
+		
+		Image img = Image.getInstance("resources/images/codigo_barra.jpg");
+		img.setAbsolutePosition(0f, 0f);
+        img.scaleAbsoluteWidth(100f);
+        img.scaleAbsoluteHeight(100f);
+		
+        cell = new PdfPCell(img, true);
+        
+        cell.setBorderColor(GrayColor.GRAYWHITE);
+        cell.setHorizontalAlignment(Element.ALIGN_CENTER);
+        cell.setColspan(8);
+        table.addCell(cell);
+        
+        cell = new PdfPCell(new Paragraph("aaaaaa"));
+        cell.setBorderColor(GrayColor.GRAYWHITE);
+        table.addCell(cell);
+        
+        cell = new PdfPCell(new Paragraph("Vencimento: 05/01/2018"));
+        cell.setHorizontalAlignment(Element.ALIGN_RIGHT);
+        cell.setBorderColor(GrayColor.GRAYWHITE);
+        table.addCell(cell);
+        
+        document.add(table);
+        
+//      setFontCustom(typeFont, size);
+		
+//		setSpacingTop(50f);
+//		setSpacingBottom(0f);
+//		setFontCustom(1, 11f);
+//		insertRow("32131.1.213111511135.1313131515.31563115515.31631531515.1515");
+//		setSpacingTop(0f);
+//		createSeparatorLine(0f, 100f);
+//		setPositionImage(45f, 10f);
+//		setSizeImage(500f, 60f);
+//		addImage("codigo_barra.jpg");
+	}
 	
 	//METHODS TO MANIPULATE TABLES
 	public void createTable(float [] columnWidths) {
@@ -197,25 +270,7 @@ public class PdfFormatter {
 		}
 	}
 	
-	public void createSeparatorLineTable(float marginTopSeparator, float widthSeparator) {
-		DottedLineSeparator line = new DottedLineSeparator();
-		paragraph = new Paragraph();
-		
-		line.setOffset(marginTopSeparator);
-		line.setGap(0f);
-		line.setLineWidth(0f);
-		line.setPercentage(widthSeparator);
-		
-		paragraph.add(line);
-		
-		cell = new PdfPCell(paragraph);
-		cell.setBorderColor(GrayColor.GRAYWHITE);
-        cell.setHorizontalAlignment(Element.ALIGN_LEFT);
-        cell.setColspan(8);
-        table.addCell(cell);
-	}
-	
-	public void createLineTable(String cellOne, String cellTwo) throws DocumentException {	
+	public void insertLineTable(String cellOne, String cellTwo) throws DocumentException {	
 		if (typeFont != 1 || size != 12f) {
 			typeFont = 1;
 			size = 12f;
@@ -242,6 +297,25 @@ public class PdfFormatter {
 		table.setSpacingAfter(spacingTopTable);
 	}
 	
+	public void createSeparatorLineTable(float marginTopSeparator, float widthSeparator) {
+		DottedLineSeparator line = new DottedLineSeparator();
+		paragraph = new Paragraph();
+		
+		line.setOffset(marginTopSeparator);
+		line.setGap(0f);
+		line.setLineWidth(0f);
+		line.setPercentage(widthSeparator);
+		
+		paragraph.add(line);
+		
+		cell = new PdfPCell(paragraph);
+		cell.setBorderColor(GrayColor.GRAYWHITE);
+        cell.setHorizontalAlignment(Element.ALIGN_LEFT);
+        cell.setColspan(8);
+        table.addCell(cell);
+	}
+
+	//HTML
 	public void customHTML() {
 		StringBuilder sb = new StringBuilder();
 		sb.append("<div>\n<p align=\"center\">");
@@ -251,34 +325,26 @@ public class PdfFormatter {
 		sb.append("<font color=\"#32cd32\">&nbsp;</font>");
 		sb.append("</p>\n</div>");
 	}
-
-	public void createHeader() throws DocumentException, MalformedURLException, IOException {
-		setPositionImage(10f, 735f);
-		addImage("logo_lyra.jpg");
-		
-		setSpacingLeft(70f);
-		setSpacingTopBottom(0f, 0f);
-		setFontCustom(3, 15);
-		insertRow("Lyra Network Telecomunicações E Meios De Pagamento Ltda.");
-		
-		setSpacingLeft(140f);
-		setSpacingTopBottom(0f, 0f);
-		setFontCustom(2, 8);
-		insertRow("Av. Queiroz Filho, 1560 - Vila Leopoldina");
-		
-		setSpacingLeft(180f);
-		setSpacingTopBottom(0f, 0f);
-		setFontCustom(2, 8);
-		insertRow("São Paulo - SP, 05319-000");
-		
-		setSpacingLeft(200f);
-		setSpacingTopBottom(0f, 0f);
-		setFontCustom(2, 8);
-		insertRow("06.649.157/0001-29");
-
-		createSeparatorLine(5f, 100f);
+	
+	//SPACING
+	public void setSpacingLeft(float widthText) {
+		this.widthText = widthText;
+	}
+	
+	public void setSpacingTopBottom(float spacingTop, float spacingBottom) {
+		setSpacingTop(spacingTop);
+		setSpacingBottom(spacingBottom);
+	}
+	
+	public void setSpacingTop(float spacingTop) {
+		this.spacingTop = spacingTop;
+	}
+	
+	public void setSpacingBottom(float spacingBottom) {
+		this.spacingBottom = spacingBottom;
 	}
 
+	//IMAGE
 	public void addImage(String img) throws DocumentException, MalformedURLException, IOException {
         image = Image.getInstance("resources/images/" + img);
         image.setAbsolutePosition(widthPositionImage, heightPositionImage);
@@ -300,29 +366,13 @@ public class PdfFormatter {
 		this.widthPositionImage = widthPositionImage;
 		this.heightPositionImage = heightPositionImage;
 	}
-
-	public void setSpacingLeft(float widthText) {
-		this.widthText = widthText;
-	}
 	
-	public void setSpacingTopBottom(float spacingTop, float spacingBottom) {
-		setSpacingTop(spacingTop);
-		setSpacingBottom(spacingBottom);
-	}
-	
-	public void setSpacingTop(float spacingTop) {
-		this.spacingTop = spacingTop;
-	}
-	
-	public void setSpacingBottom(float spacingBottom) {
-		this.spacingBottom = spacingBottom;
-	}
-
 	public void setSizeImage(float widthImage, float heightImage) {
 		this.widthImage = widthImage;
 		this.heightImage = heightImage;
 	}
 	
+	//CUSTOM
 	public void createSeparatorLine(float marginTop, float width) throws DocumentException {
 		Paragraph p = new Paragraph();
 		DottedLineSeparator line = new DottedLineSeparator();
@@ -347,9 +397,5 @@ public class PdfFormatter {
 		} else if (typeFont == 3) {
 			font = new Font(FontFamily.HELVETICA, size);
 		}
-	}
-
-	public void closeFile() {
-		document.close();
 	}
 }

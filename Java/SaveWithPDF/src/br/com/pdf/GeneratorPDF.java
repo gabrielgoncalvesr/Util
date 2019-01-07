@@ -13,6 +13,8 @@ public class GeneratorPDF {
 		List<String> listOne = new ArrayList<>();
 		List<String> listTwo = new ArrayList<>();
 
+		float sumValues = 0;
+		
 		formatter.createPDF("teste");
 		
 		formatter.createHeader();
@@ -21,31 +23,27 @@ public class GeneratorPDF {
 		
 		for (int i = 10; i < 40; i++) {
 			listOne.add("Ligação de 5511909099090 - Duração de " + i + "s");
-			listTwo.add("R$ 10,0" + i);
+			
+			String value = "10." + i;
+			listTwo.add("R$ " + value);
+			
+			sumValues += new Float(value);
 		}
 		
 		float [] columns = {6, 2};
 		
 		formatter.createTable(columns);
 		formatter.createTitleTable("Movimentações");
-		formatter.createSeparatorLineTable(0f, 100f);
 		formatter.createHeaderTable("Seriais", "Preço");
-		formatter.spacingTopTable(80f);
+		formatter.createSeparatorLineTable(0f, 100f);
+		formatter.insertLineTable(" ", " ");
 		formatter.createBodyTable(listOne, listTwo);
 		formatter.createSeparatorLineTable(0f, 100f);
-		formatter.setFontCustom(1, 14f);
-		formatter.createLineTable("Total", "R$ 300,735");
+		formatter.setFontCustom(1, 13f);
+		formatter.insertLineTable("Total", "R$ " + String.valueOf(String.format("%.2f", sumValues)));
 		formatter.generateTable();
 		
-		formatter.setSpacingTop(50f);
-		formatter.setSpacingBottom(0f);
-		formatter.setFontCustom(1, 11f);
-		formatter.insertRow("32131.1.213111511135.1313131515.31563115515.31631531515.1515");
-		formatter.setSpacingTop(0f);
-		formatter.createSeparatorLine(0f, 100f);
-		formatter.setPositionImage(45f, 10f);
-		formatter.setSizeImage(500f, 60f);
-		formatter.addImage("codigo_barra.jpg");
+		formatter.createFooterBarcode();
 		
 		formatter.closeFile();
     	
