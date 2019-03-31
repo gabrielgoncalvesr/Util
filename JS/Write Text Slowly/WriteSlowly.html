@@ -56,7 +56,7 @@
             const textArray = element.innerHTML.split('');
             element.innerHTML = '';
             textArray.forEach((letra, i) => {
-                setTimeout(() => element.innerHTML += letra, 75 * i);
+                setTimeout(() => element.innerHTML += letra, 100 * i);
             });
         }
         const title = document.querySelector('.text');

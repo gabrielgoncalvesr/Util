@@ -39,10 +39,9 @@
 	$sT = $('.score-panel').find('#time');
 	function setTime () {
 	    setInterval(function(){
-	      time.getSec();
-
-	    $sT.html(time.hour + ':' + time.min + ':' + time.sec);
-	    },1)
+	    	time.getSec();
+	    	$sT.html(time.hour + ':' + time.min + ':' + time.sec);
+	    }, 20)
 	}
 	window.clearInterval(setTime());
 </script>
