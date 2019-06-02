@@ -1,0 +1,41 @@
+<!DOCTYPE html>
+<html lang="pt_BR">
+
+<head>
+	<script src="https://ajax.googleapis.com/ajax/libs/jquery/3.4.1/jquery.min.js"></script>
+</head>
+
+<body>
+	<button onclick="getData()">Get Data </button>
+	<div class="data_table">
+	</div>
+
+	<script>
+		function getData() {
+			$.getJSON('https://api.github.com/users/gabrielgoncalvesr', function (data) {
+				const dataLogin = data.login;
+				const dataId = data.id;
+				const dataAvatarUrl = data.avatar_url;
+				const dataUrl = data.url;
+				const dataName = data.name;
+				const dataBlog = data.blog;
+				const dataLocation = data.location;
+				const dataBio = data.bio;
+
+				var html = '';
+				html += '<p>' + dataLogin + '</p>';
+				html += '<p>' + dataId + '</p>';
+				html += '<p>' + dataAvatarUrl + '</p>';
+				html += '<p>' + dataUrl + '</p>';
+				html += '<p>' + dataName + '</p>';
+				html += '<p>' + dataBlog + '</p>';
+				html += '<p>' + dataLocation + '</p>';
+				html += '<p>' + dataBio + '</p>';
+
+				$('.data_table').html(html);
+			});
+		}
+	</script>
+</body>
+
+</html>
